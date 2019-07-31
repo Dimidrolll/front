@@ -1,6 +1,7 @@
 var cvs = document.getElementById("canvas");
 var ctx = cvs.getContext("2d");
 
+//sprites
 var bird = new Image();
 var bg = new Image();
 var fg = new Image();
@@ -13,16 +14,21 @@ fg.src = "img/flappy_bird_fg.png";
 pipeUp.src = "img/flappy_bird_pipeUp.png";
 pipeBottom.src = "img/flappy_bird_pipeBottom.png";
 
+//music
 var fly = new Audio();
 var score_audio = new Audio();
 
 fly.src = "audio/fly.mp3";
 score_audio.src = "audio/score.mp3";
 
+//difficulty
+var difficulty = 1;
+var difDialog =  prompt("Enter a level of difficulty(1-10): ", difficulty);
 
-var gap = 110;
+difficulty = difDialog;
+var gap = 130 - 10 * difficulty;
 
-//
+//event
 document.addEventListener("keydown", moveUp);
 
 function moveUp() {
@@ -45,6 +51,7 @@ var yPos = 150;
 var grav = 1.5;
 var score = 0;
 
+
 function draw() {
     ctx.drawImage(bg, 0, 0);
 
@@ -63,17 +70,17 @@ function draw() {
         }
 
         if (xPos + bird.width >= pipe[i].x && xPos <= pipe[i].x + pipeUp.width && (yPos <= pipe[i].y + pipeUp.height || yPos + bird.height >= pipe[i].y + pipeUp.height + gap) || yPos + bird.height >= cvs.height - fg.height) {
+            alert("Game Over!\n" + "Score: " + score.toFixed(4) + "\nRestart de gam?");
             location.reload();
-
         }
 
         if (pipe[i].x == 5) {
-            score++;
+            score += +difficulty;
             score_audio.play();
         }
 
     }
-
+    
 
     ctx.drawImage(fg, 0, cvs.height - fg.height);
     ctx.drawImage(bird, xPos, yPos);
@@ -82,9 +89,8 @@ function draw() {
 
     ctx.fillStyle = "#000";
     ctx.font = "20px Verdana";
-    ctx.fillText("Score: " + score, 10, cvs.height - 20)
+    ctx.fillText("Score: " + score.toFixed(4), 10, cvs.height - 20)
     
     requestAnimationFrame(draw);
 }
-
 pipeBottom.onload = draw;
